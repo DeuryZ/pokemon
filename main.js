@@ -20,22 +20,38 @@ addEventListener("DOMContentLoaded", async() => {
         <p>Type: ${poke.types[0].type.name}</p>    
     `);
     }
+    let allTypesPokemon = [];
     for (let i = 0; i < res.results.length; i++) {
         let element = res.results[i].url;
         let poke = await (await fetch(`${element}`)).json();
         poke.types.map(data=>{
-            let allTypesPokemon = [];
-            if ((allTypesPokemon.indexOf(data.type.name))){
-                allTypesPokemon.push(data.type.name);
+            if ((!allTypesPokemon.includes(data.type.name))){
+                allTypesPokemon.push(data.type.name);   
             }
-            else{
-                
-            }
-            
-    console.log(allTypesPokemon.indexOf(data.type.name))
         })
     }
+    let myTypes=document.querySelector(".types");
+    allTypesPokemon.map(data=>{
+        myTypes.insertAdjacentHTML("beforeend", `
+        <li class="type" idName="${data}">${data}</li>
+        `);
+    })
+    let myType=document.querySelectorAll(".type");
+    myType.forEach(data=>{
+        data.addEventListener("click", async(e) => {
+            if(e.target.matches(".type")){
+                console.log(e.target.getAttribute("idName"));
+                let res = await (await fetch(`https://pokeapi.co/api/v2/type/${e.target.getAttribute("idName")}`)).json();
+                res.pokemon.map(data=>{
+                    console.log(data.pokemon.name)
+                })
+            }
+            
+        })
+    })
+
 })
+
 
 
 
