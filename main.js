@@ -1,7 +1,32 @@
+let myContent = document.querySelector(".content");
+function getRandomInt(max) {
+    return Math.floor(Math.random() * max);
+}
+addEventListener("DOMContentLoaded", async() => {
+    let res = await (await fetch("https://pokeapi.co/api/v2/pokemon?offset=20&limit=1000")).json();
+    console.log(res.results);
+
+    for (let index = 0; index < 10; index++) {
+        let randomNum=getRandomInt(1000);
+        const element = res.results[randomNum];
+        console.log(element)
+        let img = element.sprites;
+        let poke = await (await fetch(`${element.url}`)).json();
+        myContent.insertAdjacentHTML("beforeend", `
+        <h1>${element.name}</h1>
+        <img src="${poke.sprites.front_default}" alt="">
+        <p>${poke.stats}</p>
+    `);
+    }
+
+})
+
+
+
+
+/*
 const myPikachu = document.querySelector("#myPikachu");
-
-
-myPikachu.addEventListener("click", async () => {
+    myPikachu.addEventListener("click", async () => {
     let res = await (
     await fetch("https://pokeapi.co/api/v2/pokemon/pikachu")
     ).json();
@@ -20,4 +45,4 @@ myPikachu.addEventListener("click", async () => {
     imageWidth: "80%",
     imageHeight: "80%",
     });
-});
+});*/
