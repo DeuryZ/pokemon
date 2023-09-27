@@ -3,22 +3,38 @@ function getRandomInt(max) {
     return Math.floor(Math.random() * max);
 }
 addEventListener("DOMContentLoaded", async() => {
-    let res = await (await fetch("https://pokeapi.co/api/v2/pokemon?offset=20&limit=1000")).json();
-    console.log(res.results);
-
+    let res = await (await fetch("https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0")).json();
+    // console.log(res.results);
+    // console.log(res)
     for (let index = 0; index < 10; index++) {
         let randomNum=getRandomInt(1000);
         const element = res.results[randomNum];
-        console.log(element)
+        // console.log(element)
         let img = element.sprites;
         let poke = await (await fetch(`${element.url}`)).json();
+        // console.log(poke.types[0].type)
+        // console.log(poke.types[0].type.name)
         myContent.insertAdjacentHTML("beforeend", `
         <h1>${element.name}</h1>
         <img src="${poke.sprites.front_default}" alt="">
-        <p>${poke.stats}</p>
+        <p>Type: ${poke.types[0].type.name}</p>    
     `);
     }
-
+    for (let i = 0; i < res.results.length; i++) {
+        let element = res.results[i].url;
+        let poke = await (await fetch(`${element}`)).json();
+        poke.types.map(data=>{
+            let allTypesPokemon = [];
+            if ((allTypesPokemon.indexOf(data.type.name))){
+                allTypesPokemon.push(data.type.name);
+            }
+            else{
+                
+            }
+            
+    console.log(allTypesPokemon.indexOf(data.type.name))
+        })
+    }
 })
 
 
