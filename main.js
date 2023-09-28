@@ -1,4 +1,6 @@
+
 let myContent = document.querySelector(".content");
+let myContentSearch = document.querySelector(".contentSearch");
 function getRandomInt(max) {
     return Math.floor(Math.random() * max);
 }
@@ -7,10 +9,9 @@ addEventListener("DOMContentLoaded", async() => {
     // console.log(res.results);
     // console.log(res)
     for (let index = 0; index < 10; index++) {
-        let randomNum=getRandomInt(1000);
+        let randomNum=getRandomInt(100);
         const element = res.results[randomNum];
         // console.log(element)
-        let img = element.sprites;
         let poke = await (await fetch(`${element.url}`)).json();
         // console.log(poke.types[0].type)
         // console.log(poke.types[0].type.name)
@@ -28,6 +29,9 @@ addEventListener("DOMContentLoaded", async() => {
             if ((!allTypesPokemon.includes(data.type.name))){
                 allTypesPokemon.push(data.type.name);   
             }
+            else{
+                return;
+            }
         })
     }
     let myTypes=document.querySelector(".types");
@@ -42,39 +46,43 @@ addEventListener("DOMContentLoaded", async() => {
             if(e.target.matches(".type")){
                 console.log(e.target.getAttribute("idName"));
                 let res = await (await fetch(`https://pokeapi.co/api/v2/type/${e.target.getAttribute("idName")}`)).json();
-                res.pokemon.map(data=>{
-                    console.log(data.pokemon.name)
+                myContent.style.display="none";
+                myContentSearch.innerHTML="";
+                res.pokemon.map(async(data)=>{
+                    
+                    let resImg=(await (await fetch(`${data.pokemon.url}`)).json())?(await (await fetch(`${data.pokemon.url}`)).json()):data.results[0].url;
+                    console.log(resImg);
+                    myContentSearch.insertAdjacentHTML("beforeend", `
+                    <div class="pokemonTypeContainer">
+                    <h1>${data.pokemon.name.split('-').join(' ')}</h1>
+                    <img src="${resImg.sprites.back_default}" alt="">
+                    <p></p>
+                    </div>
+                    `);
                 })
             }
-            
         })
     })
-
 })
 
-
-
-
-
-/*
-const myPikachu = document.querySelector("#myPikachu");
-    myPikachu.addEventListener("click", async () => {
-    let res = await (
-    await fetch("https://pokeapi.co/api/v2/pokemon/pikachu")
-    ).json();
-    let img = res.sprites.front_default;
-    let defaultImg =
-    "https://i.pinimg.com/originals/27/ae/5f/27ae5f34f585523fc884c2d479731e16.gif";
-
-    Swal.fire({
-    title: `${res.name}`,
-    text: "Modal with a custom image.",
-    imageUrl: `${img ? img : defaultImg}`,
-    html: `
-        ${res.stats.map(data => `<input type="range" value="${data.base_stat}"><label><b>${data.base_stat}</b> ${data.stat.name} </label><br>`
-            ).join("")}
-        `,
-    imageWidth: "80%",
-    imageHeight: "80%",
-    });
-});*/
+document.addEventListener("click", async(e) => {
+    if (e.target.matches(".pokemonTypeContainer")){
+        let res = await (
+        await fetch("https://pokeapi.co/api/v2/pokemon/pikachu")
+        ).json();
+        let img = res.sprites.front_default;
+        let defaultImg =
+        "https://i.pinimg.com/originals/27/ae/5f/27ae5f34f585523fc884c2d479731e16.gif";
+        Swal.fire({
+        title: `${res.name}`,
+        text: "Modal with a custom image.",
+        imageUrl: `${img ? img : defaultImg}`,
+        html: `
+            ${res.stats.map(data => `<input type="range" value="${data.base_stat}"><label><b>${data.base_stat}</b> ${data.stat.name} </label><br>`
+                ).join("")}
+            `,
+        imageWidth: "80%",
+        imageHeight: "80%",
+        });
+    }
+})
