@@ -33,6 +33,9 @@ addEventListener("DOMContentLoaded", async() => {
                 return;
             }
         })
+        if(allTypesPokemon.length==18){
+            break;
+        }
     }
     let myTypes=document.querySelector(".types");
     allTypesPokemon.map(data=>{
@@ -53,9 +56,9 @@ addEventListener("DOMContentLoaded", async() => {
                     let resImg=(await (await fetch(`${data.pokemon.url}`)).json())?(await (await fetch(`${data.pokemon.url}`)).json()):data.results[0].url;
                     console.log(resImg);
                     myContentSearch.insertAdjacentHTML("beforeend", `
-                    <div class="pokemonTypeContainer">
+                    <div class="pokemonTypeContainer" pokeName="${data.pokemon.name}" pokePhoto="${resImg.sprites.front_default}">
                     <h1>${data.pokemon.name.split('-').join(' ')}</h1>
-                    <img src="${resImg.sprites.back_default}" alt="">
+                    <img src="${resImg.sprites.front_default}" alt="">
                     <p></p>
                     </div>
                     `);
@@ -67,22 +70,29 @@ addEventListener("DOMContentLoaded", async() => {
 
 document.addEventListener("click", async(e) => {
     if (e.target.matches(".pokemonTypeContainer")){
+        let pokeName=e.target.getAttribute("pokeName")
         let res = await (
-        await fetch("https://pokeapi.co/api/v2/pokemon/pikachu")
+        await fetch(`https://pokeapi.co/api/v2/pokemon/${pokeName}`)
         ).json();
         let img = res.sprites.front_default;
         let defaultImg =
         "https://i.pinimg.com/originals/27/ae/5f/27ae5f34f585523fc884c2d479731e16.gif";
+
         Swal.fire({
         title: `${res.name}`,
         text: "Modal with a custom image.",
         imageUrl: `${img ? img : defaultImg}`,
         html: `
-            ${res.stats.map(data => `<input type="range" value="${data.base_stat}"><label><b>${data.base_stat}</b> ${data.stat.name} </label><br>`
+            ${res.stats.map(data => `<input type="range" class="range" value="${data.base_stat}"><label><b>${data.base_stat}</b> ${data.stat.name} </label><br>`
                 ).join("")}
             `,
         imageWidth: "80%",
         imageHeight: "80%",
+        confirmButtonText: 'Save',
         });
     }
+    if (e.target.matches(".range")){
+        let val=e.target.value
+        e.target.nextElementSibling.querySelector("b").textContent = val;
+    }    
 })
