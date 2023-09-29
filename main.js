@@ -1,40 +1,13 @@
+import { randomPokemon } from "./functions.js";
 
 let myContent = document.querySelector(".content");
 let myContentSearch = document.querySelector(".contentSearch");
-function getRandomInt(max) {
-    return Math.floor(Math.random() * max);
-}
+
 addEventListener("DOMContentLoaded", async() => {
     let res = await (await fetch("https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0")).json();
-    for (let index = 0; index < 10; index++) {
-        let randomNum=getRandomInt(100);
-        const element = res.results[randomNum];
-        let poke = await (await fetch(`${element.url}`)).json();
-        myContent.insertAdjacentHTML("beforeend", `
-        <div class="pokemonTypeContainer" pokeName="${element.name}" pokePhoto="${poke.sprites.front_default}">
-        <h1>${element.name}</h1>
-        <img src="${poke.sprites.front_default}" alt="">
-        <p>Type: ${poke.types[0].type.name}</p>    
-    `);
-    }
+    randomPokemon(res, myContent);
     let allTypesPokemon = ['grass', 'poison', 'fire', 'flying', 'water', 'bug', 'normal', 'electric', 'ground', 'fairy', 'fighting', 'psychic', 'rock', 'steel', 'ice', 'ghost', 'dragon', 'dark'];
-    /*for (let i = 0; i < res.results.length; i++) {
-        let element = res.results[i].url;
-        let poke = await (await fetch(`${element}`)).json();
-        poke.types.map(data=>{
-            if ((!allTypesPokemon.includes(data.type.name))){
-                allTypesPokemon.push(data.type.name);   
-            }
-            else{
-                
-                return;
-            }
-        })
-        if(allTypesPokemon.length==18){
-            console.log(allTypesPokemon)
-            break;
-        }
-    }*/
+
     let myTypes=document.querySelector(".types");
     allTypesPokemon.map(data=>{
         myTypes.insertAdjacentHTML("beforeend", `
@@ -89,8 +62,12 @@ document.addEventListener("click", async(e) => {
         }).then((result) => {
         /* Read more about isConfirmed, isDenied below */
         if (result.isConfirmed) {
-            let pokedatos = [res.stats.map(data => data.base_stat), res.stats.map(data => data.stat.name)];
-            console.log("pokedatos:", pokedatos)
+            let pokedatos = [];
+            if (e.target.matches(".range")){
+            console.log("save")
+            }
+            console.log(pokedatos)
+            localStorage.setItem(pokeName, JSON.stringify(pokedatos));
         Swal.fire('Saved!', '', 'success')
         } else if (result.isDenied) {
             console.log("no save")
@@ -100,7 +77,6 @@ document.addEventListener("click", async(e) => {
     }
     if (e.target.matches(".range")){
         let val=e.target.value
-        console.log(e.target.nextElementSibling.querySelector("b").getAttribute("idBase"))
         e.target.nextElementSibling.querySelector("b").textContent = val;
     }
 })
