@@ -1,5 +1,6 @@
 let pokedatos = [];
-
+let hpValue,attackValue,defenseValue,specialAttackValue,specialDefenseValue,speedValue,pokeNameEdited;
+let resMokeapi = await (await fetch(`https://650ad5b7dfd73d1fab08fcc0.mockapi.io/tabla/mokeapi/`)).json();
 export function getRandomInt(max) {
     return Math.floor(Math.random() * max);
 }
@@ -38,75 +39,103 @@ export async function findTypePokemon(res) {
         }
     }
 }
-let allTypesPokemon = [
-    'grass',
-    'poison',
-    'fire',
-    'flying',
-    'water',
-    'bug',
-    'normal',
-    'electric',
-    'ground',
-    'fairy',
-    'fighting',
-    'psychic',
-    'rock',
-    'steel',
-    'ice',
-    'ghost',
-    'dragon',
-    'dark'
-];
 export async function showPokemon(e, select) {
     if (e.target.matches(select)) {
         let pokeName = e.target.getAttribute("pokeName")
-        let res = await (
-            await fetch(`https://pokeapi.co/api/v2/pokemon/${pokeName}`)).json();
-        let img = res.sprites.front_default;
-        let defaultImg = "https://i.pinimg.com/originals/27/ae/5f/27ae5f34f585523fc884c2d479731e16.gif";
-        Swal.fire({
-            title: `${res.name.toUpperCase()}`,
-            text: "Modal with a custom image.",
-            imageUrl: `${img ? img : defaultImg}`,
-            html: `
-            ${res.stats.map(data => `<input type="range" class="range" value="${data.base_stat}" pokeStatName="${data.stat.name}" idName="${res.name}"><label><b idBase="${data.stat.name}">${data.base_stat}</b> ${data.stat.name.toUpperCase()} </label><br>`
-            ).join("")}
-            `,
-
-            imageWidth: "80%",
-            imageHeight: "80%",
-            showDenyButton: true,
-            showCancelButton: true,
-            confirmButtonText: 'Save',
-            denyButtonText: `Don't save`,
-        }).then((result) => {
-            if (result.isConfirmed) {
-                saveData()
-                Swal.fire('Saved!', '', 'success')
-            } else if (result.isDenied) {
-                console.log("no save")
-                Swal.fire('Changes are not saved', '', 'info')
+        let res = await (await fetch(`https://pokeapi.co/api/v2/pokemon/${pokeName}`)).json();
+        let result = false
+        resMokeapi.map(data => {
+            if(data.name==pokeName){
+                result = true;
             }
         })
-    }
+            if(
+                result
+            ){
+                console.log("si")
+                let img = res.sprites.front_default;
+                let defaultImg = "https://i.pinimg.com/originals/27/ae/5f/27ae5f34f585523fc884c2d479731e16.gif";
+                Swal.fire({
+                title: `${res.name.toUpperCase()}`,
+                text: "Modal with a custom image.",
+                imageUrl: `${img ? img : defaultImg}`,
+                html: `
+                ${`<input type="range" class="range" value="${data.base_stat}" pokeStatName="${data.stat.name}" idName="${res.name}"><label><b idBase="${data.stat.name}">${data.base_stat}</b> ${data.stat.name.toUpperCase()} </label><br>`}
+                ${`<input type="range" class="range" value="${data.base_stat}" pokeStatName="${data.stat.name}" idName="${res.name}"><label><b idBase="${data.stat.name}">${data.base_stat}</b> ${data.stat.name.toUpperCase()} </label><br>`}
+                ${`<input type="range" class="range" value="${data.base_stat}" pokeStatName="${data.stat.name}" idName="${res.name}"><label><b idBase="${data.stat.name}">${data.base_stat}</b> ${data.stat.name.toUpperCase()} </label><br>`}
+                ${`<input type="range" class="range" value="${data.base_stat}" pokeStatName="${data.stat.name}" idName="${res.name}"><label><b idBase="${data.stat.name}">${data.base_stat}</b> ${data.stat.name.toUpperCase()} </label><br>`}
+                ${`<input type="range" class="range" value="${data.base_stat}" pokeStatName="${data.stat.name}" idName="${res.name}"><label><b idBase="${data.stat.name}">${data.base_stat}</b> ${data.stat.name.toUpperCase()} </label><br>`}
+                ${`<input type="range" class="range" value="${data.base_stat}" pokeStatName="${data.stat.name}" idName="${res.name}"><label><b idBase="${data.stat.name}">${data.base_stat}</b> ${data.stat.name.toUpperCase()} </label><br>`}
+                `,
+                imageWidth: "80%",
+                imageHeight: "80%",
+                showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonText: 'Save',
+                denyButtonText: `Don't save`,
+                }).then((result) => {
+                if (result.isConfirmed) {
+                    createNewObject(hpValue,attackValue,defenseValue,specialAttackValue,specialDefenseValue,speedValue,pokeNameEdited);
+                    saveData();
+                    Swal.fire('Saved!', '', 'success')
+                } else if (result.isDenied) {
+                    console.log("no save")
+                    Swal.fire('Changes are not saved', '', 'info')
+                }
+                })
+            }else{
+                console.log("otra opcion")
+                let img = res.sprites.front_default;
+                let defaultImg = "https://i.pinimg.com/originals/27/ae/5f/27ae5f34f585523fc884c2d479731e16.gif";
+                Swal.fire({
+                title: `${res.name.toUpperCase()}`,
+                text: "Modal with a custom image.",
+                imageUrl: `${img ? img : defaultImg}`,
+                html: `
+                ${res.stats.map(data => `<input type="range" class="range" value="${data.base_stat}" pokeStatName="${data.stat.name}" idName="${res.name}"><label><b idBase="${data.stat.name}">${data.base_stat}</b> ${data.stat.name.toUpperCase()} </label><br>`
+                ).join("")}
+                `,
+                imageWidth: "80%",
+                imageHeight: "80%",
+                showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonText: 'Save',
+                denyButtonText: `Don't save`,
+                }).then((result) => {
+                if (result.isConfirmed) {
+                    createNewObject(hpValue,attackValue,defenseValue,specialAttackValue,specialDefenseValue,speedValue,pokeNameEdited);
+                    saveData();
+                    Swal.fire('Saved!', '', 'success')
+                } else if (result.isDenied) {
+                    console.log("no save")
+                    Swal.fire('Changes are not saved', '', 'info')
+                }
+                })
+            }
+        }
+        
     if (e.target.matches(".range")) {
         const idName = e.target.getAttribute("idName");
         const pokeStatName = e.target.getAttribute("pokeStatName");
         const pokeStatValue = e.target.value;
-
-            pokedatos={"stats": 
-            [
-            {
-                "base_stat": pokeStatValue,
-                "stat": 
-                {
-                "name": pokeStatName
-                },
-                "pokeName": idName
+        resMokeapi.map(data => {
+            if (data.name == idName) {
+                pokeNameEdited = data.name;
+                if(pokeStatName=="hp"){
+                    hpValue=pokeStatValue;
+                }if(pokeStatName=="attack"){
+                    attackValue=pokeStatValue;
+                }if(pokeStatName=="defense"){
+                    defenseValue=pokeStatValue;
+                }if(pokeStatName=="specialAttack"){
+                    specialAttackValue=pokeStatValue;
+                }if(pokeStatName=="specialDefense"){
+                    specialDefenseValue=pokeStatValue;
+                }if(pokeStatName=="speed"){
+                    speedValue=pokeStatValue;
+                }
             }
-            ]
-            };
+        })
         }
         console.log(pokedatos);
 }
@@ -120,3 +149,15 @@ async function saveData() {
     let res = await (await fetch("https://650ad5b7dfd73d1fab08fcc0.mockapi.io/tabla/mokeapi", config)).json();
 }
 
+function createNewObject(hpValue,attackValue,defenseValue,specialAttackValue,specialDefenseValue,speedValue,pokeNameEdited){
+    pokedatos={
+        "hp": hpValue,
+        "attack": attackValue,
+        "defense": defenseValue,
+        "specialAttack": specialAttackValue,
+        "specialDefense": specialDefenseValue,
+        "speed": speedValue,
+        "name": pokeNameEdited
+    };
+    return pokedatos;
+}

@@ -5,11 +5,12 @@ let myContent = document.querySelector(".content");
 let myContentSearch = document.querySelector(".contentSearch");
 
 addEventListener("DOMContentLoaded", async() => {
+    
     let res = await (await fetch("https://pokeapi.co/api/v2/pokemon?limit=100000&offset=0")).json();
     randomPokemon(res, myContent);
     let allTypesPokemon = [
         'grass', 
-        'poison', 
+        'poison',
         'fire', 
         'flying', 
         'water', 
